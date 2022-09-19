@@ -185,6 +185,7 @@ vec3 move = vec3(rotatex.xy, rotatex.z - 0.2);
 vec3 persp = vec3( move.x  / ( (move.z + 2) / 3 ) ,
 		   move.y  / ( (move.z + 2) / 3 ) ,
 		     move.z);
+
     gl_Position = vec4(persp, 1.0);
     fragmentColor = vertexColor;
 }
