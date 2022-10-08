@@ -1,9 +1,15 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"log"
 	"math"
+	"math/rand"
+	"os"
 	"runtime"
+	"strconv"
+	"strings"
 	"time"
 
 	gl "github.com/chsc/gogl/gl33"
@@ -54,12 +60,176 @@ var zrot float32 = 0.0
 var xrot float32 = 0.0
 var UniScale gl.Int
 
+var f = []int{}
+var v = []float64{}
+var triangle_vertices = []gl.Float{}
+var triangle_colours = []gl.Float{}
+
+func readLines(path string) ([]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
+}
+
 func main() {
 	var window *sdl.Window
 	var context sdl.GLContext
 	var event sdl.Event
 	var running bool
 	var err error
+
+	/*f, err := os.Open(`C:\Users\Solonas\Desktop\EPL 607\file.obj`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	inputdata := string(f)
+
+	for scanner.Scan() {
+
+		fmt.Println(scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+	*/
+	/*	filename := `C:\Users\Solonas\Desktop\EPL 607\file.obj`
+
+		d, err := ioutil.ReadFile(filename)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		s := string(d)
+		//lines := strings.Split(s, " ")
+		lines := strings.Fields(s)
+
+		fmt.Print(lines)
+	*/
+	/*
+		filebuffer, err := ioutil.ReadFile(filename)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		inputdata := string(filebuffer)
+		data := bufio.NewScanner(strings.NewReader(inputdata))
+		data.Split(bufio.ScanRunes)
+		//fmt.Print(data.Text())
+
+		for data.Scan() {
+			if data.Text() == "f" {
+				fmt.Print(data.Text())
+			}
+		}
+	*/
+	//ndsjdj
+
+	// open file for reading
+	// read line by line
+	lines, err := readLines(`C:\Users\Solonas\Desktop\EPL 607\file.obj`)
+	if err != nil {
+		log.Fatalf("readLines: %s", err)
+	}
+	// print file contents
+	id := []int{}
+	for i, line := range lines {
+		//read := strings.Split(line, "")
+		read := strings.Fields(line)
+
+		if line == "" {
+			fmt.Println("ERROR")
+			read = append(read, "\n")
+		}
+		fmt.Println(line)
+
+		if read[0] == "f" {
+			fline1 := strings.Split(read[1], "/")
+			fline2 := strings.Split(read[2], "/")
+			fline3 := strings.Split(read[3], "/")
+			intfline1, d1 := strconv.Atoi(fline1[0])
+			intfline2, d2 := strconv.Atoi(fline2[0])
+			intfline3, d3 := strconv.Atoi(fline3[0])
+			f = append(f, intfline1, intfline2, intfline3)
+
+			//fmt.Println(countf)
+			//fmt.Println(s)
+
+			/*fmt.Println(i, intvline1)
+			fmt.Println(i, intvline2)
+			fmt.Println(i, intvline3)*/
+			//arrd := [3]error{d1, d2, d3}
+			//fmt.Printf("arrd: %v\n", arrd)
+			if d1 = sdl.Init(sdl.INIT_EVERYTHING); d1 != nil {
+				panic(d1)
+			}
+			if d2 = sdl.Init(sdl.INIT_EVERYTHING); d2 != nil {
+				panic(d2)
+			}
+			if d3 = sdl.Init(sdl.INIT_EVERYTHING); d3 != nil {
+				panic(d3)
+			}
+		} else if read[0] == "v" {
+			vline1 := strings.Fields(read[1])
+			vline2 := strings.Fields(read[2])
+			vline3 := strings.Fields(read[3])
+			if floatvline1, err := strconv.ParseFloat(vline1[0], 64); err == nil {
+				//fmt.Println(floatvline1) // 3.1415927410125732
+				v = append(v, floatvline1)
+			}
+			if floatvline2, err := strconv.ParseFloat(vline2[0], 64); err == nil {
+				//fmt.Println(floatvline2) // 3.1415927410125732
+				v = append(v, floatvline2)
+			}
+			if floatvline3, err := strconv.ParseFloat(vline3[0], 64); err == nil {
+				//fmt.Println(floatvline3) // 3.1415927410125732
+				v = append(v, floatvline3)
+			}
+
+		} else {
+			fmt.Println(read)
+		}
+
+		id = append(id, i)
+
+	}
+
+	for i := 0; i < len(f); i++ {
+		//fmt.Scanln(&numbers[i])
+		num1 := f[i]*3 - 3
+		num2 := f[i]*3 - 2
+		num3 := f[i]*3 - 1
+
+		t1 := gl.Float(v[num1])
+		t2 := gl.Float(v[num2])
+		t3 := gl.Float(v[num3])
+		random1 := gl.Float(rand.Float64())
+		random2 := gl.Float(rand.Float64())
+		random3 := gl.Float(rand.Float64())
+		triangle_vertices = append(triangle_vertices, t1, t2, t3)
+		triangle_colours = append(triangle_colours, random1, random2, random3)
+
+		//fmt.Println(rand.Float64())
+
+	}
+	/*	fmt.Println(len(f))
+		fmt.Println(len(v))
+	*/
+	//here
 	runtime.LockOSThread()
 	if err = sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		panic(err)
@@ -139,6 +309,7 @@ func main() {
 		drawgl()
 		window.GLSwap()
 	}
+
 }
 
 func drawgl() {
@@ -200,79 +371,3 @@ void main()
 }
 `
 )
-
-var triangle_vertices = []gl.Float{
-	-1.0, -1.0, -1.0,
-	-1.0, -1.0, 1.0,
-	-1.0, 1.0, 1.0,
-	1.0, 1.0, -1.0,
-	-1.0, -1.0, -1.0,
-	-1.0, 1.0, -1.0,
-	1.0, -1.0, 1.0,
-	-1.0, -1.0, -1.0,
-	1.0, -1.0, -1.0,
-	1.0, 1.0, -1.0,
-	1.0, -1.0, -1.0,
-	-1.0, -1.0, -1.0,
-	-1.0, -1.0, -1.0,
-	-1.0, 1.0, 1.0,
-	-1.0, 1.0, -1.0,
-	1.0, -1.0, 1.0,
-	-1.0, -1.0, 1.0,
-	-1.0, -1.0, -1.0,
-	-1.0, 1.0, 1.0,
-	-1.0, -1.0, 1.0,
-	1.0, -1.0, 1.0,
-	1.0, 1.0, 1.0,
-	1.0, -1.0, -1.0,
-	1.0, 1.0, -1.0,
-	1.0, -1.0, -1.0,
-	1.0, 1.0, 1.0,
-	1.0, -1.0, 1.0,
-	1.0, 1.0, 1.0,
-	1.0, 1.0, -1.0,
-	-1.0, 1.0, -1.0,
-	1.0, 1.0, 1.0,
-	-1.0, 1.0, -1.0,
-	-1.0, 1.0, 1.0,
-	1.0, 1.0, 1.0,
-	-1.0, 1.0, 1.0,
-	1.0, -1.0, 1.0}
-
-var triangle_colours = []gl.Float{
-	0.583, 0.771, 0.014,
-	0.609, 0.115, 0.436,
-	0.327, 0.483, 0.844,
-	0.822, 0.569, 0.201,
-	0.435, 0.602, 0.223,
-	0.310, 0.747, 0.185,
-	0.597, 0.770, 0.761,
-	0.559, 0.436, 0.730,
-	0.359, 0.583, 0.152,
-	0.483, 0.596, 0.789,
-	0.559, 0.861, 0.639,
-	0.195, 0.548, 0.859,
-	0.014, 0.184, 0.576,
-	0.771, 0.328, 0.970,
-	0.406, 0.615, 0.116,
-	0.676, 0.977, 0.133,
-	0.971, 0.572, 0.833,
-	0.140, 0.616, 0.489,
-	0.997, 0.513, 0.064,
-	0.945, 0.719, 0.592,
-	0.543, 0.021, 0.978,
-	0.279, 0.317, 0.505,
-	0.167, 0.620, 0.077,
-	0.347, 0.857, 0.137,
-	0.055, 0.953, 0.042,
-	0.714, 0.505, 0.345,
-	0.783, 0.290, 0.734,
-	0.722, 0.645, 0.174,
-	0.302, 0.455, 0.848,
-	0.225, 0.587, 0.040,
-	0.517, 0.713, 0.338,
-	0.053, 0.959, 0.120,
-	0.393, 0.621, 0.362,
-	0.673, 0.211, 0.457,
-	0.820, 0.883, 0.371,
-	0.982, 0.099, 0.879}
