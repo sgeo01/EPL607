@@ -145,7 +145,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
-	// print file contents
+
 	id := []int{}
 	for i, line := range lines {
 		//read := strings.Split(line, "")
@@ -166,14 +166,9 @@ func main() {
 			intfline3, d3 := strconv.Atoi(fline3[0])
 			f = append(f, intfline1, intfline2, intfline3)
 
-			//fmt.Println(countf)
-			//fmt.Println(s)
-
 			/*fmt.Println(i, intvline1)
 			fmt.Println(i, intvline2)
 			fmt.Println(i, intvline3)*/
-			//arrd := [3]error{d1, d2, d3}
-			//fmt.Printf("arrd: %v\n", arrd)
 			if d1 = sdl.Init(sdl.INIT_EVERYTHING); d1 != nil {
 				panic(d1)
 			}
@@ -188,15 +183,12 @@ func main() {
 			vline2 := strings.Fields(read[2])
 			vline3 := strings.Fields(read[3])
 			if floatvline1, err := strconv.ParseFloat(vline1[0], 64); err == nil {
-				//fmt.Println(floatvline1) // 3.1415927410125732
 				v = append(v, floatvline1)
 			}
 			if floatvline2, err := strconv.ParseFloat(vline2[0], 64); err == nil {
-				//fmt.Println(floatvline2) // 3.1415927410125732
 				v = append(v, floatvline2)
 			}
 			if floatvline3, err := strconv.ParseFloat(vline3[0], 64); err == nil {
-				//fmt.Println(floatvline3) // 3.1415927410125732
 				v = append(v, floatvline3)
 			}
 
@@ -209,7 +201,6 @@ func main() {
 	}
 
 	for i := 0; i < len(f); i++ {
-		//fmt.Scanln(&numbers[i])
 		num1 := f[i]*3 - 3
 		num2 := f[i]*3 - 2
 		num3 := f[i]*3 - 1
@@ -223,13 +214,10 @@ func main() {
 		triangle_vertices = append(triangle_vertices, t1, t2, t3)
 		triangle_colours = append(triangle_colours, random1, random2, random3)
 
-		//fmt.Println(rand.Float64())
-
 	}
-	/*	fmt.Println(len(f))
-		fmt.Println(len(v))
-	*/
+
 	//here
+
 	runtime.LockOSThread()
 	if err = sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		panic(err)
