@@ -164,8 +164,6 @@ func main() {
 
 	}
 
-	//here
-
 	runtime.LockOSThread()
 	if err = sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		panic(err)
