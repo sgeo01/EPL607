@@ -89,7 +89,7 @@ func main() {
 
 	// open file for reading
 	// read line by line
-	lines, err := readLines(`C:\Users\Solonas\Desktop\EPL 607\file.obj`)
+	lines, err := readLines(`C:\Users\Solonas\Desktop\EPL 607\torus.obj`)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
