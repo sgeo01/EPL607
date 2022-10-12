@@ -113,19 +113,18 @@ func main() {
 			intfline2, d2 := strconv.Atoi(fline2[0])
 			intfline3, d3 := strconv.Atoi(fline3[0])
 			f = append(f, intfline1, intfline2, intfline3)
+			d1t := []error{}
+			d2t := []error{}
+			d3t := []error{}
+
+			d1t = append(d1t, d1)
+			d2t = append(d2t, d2)
+			d3t = append(d3t, d3)
 
 			/*fmt.Println(i, intvline1)
 			fmt.Println(i, intvline2)
 			fmt.Println(i, intvline3)*/
-			if d1 = sdl.Init(sdl.INIT_EVERYTHING); d1 != nil {
-				panic(d1)
-			}
-			if d2 = sdl.Init(sdl.INIT_EVERYTHING); d2 != nil {
-				panic(d2)
-			}
-			if d3 = sdl.Init(sdl.INIT_EVERYTHING); d3 != nil {
-				panic(d3)
-			}
+
 		} else if read[0] == "v" {
 			vline1 := strings.Fields(read[1])
 			vline2 := strings.Fields(read[2])
