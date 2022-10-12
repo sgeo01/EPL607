@@ -87,58 +87,6 @@ func main() {
 	var running bool
 	var err error
 
-	/*f, err := os.Open(`C:\Users\Solonas\Desktop\EPL 607\file.obj`)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer f.Close()
-
-	scanner := bufio.NewScanner(f)
-	inputdata := string(f)
-
-	for scanner.Scan() {
-
-		fmt.Println(scanner.Text())
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
-	*/
-	/*	filename := `C:\Users\Solonas\Desktop\EPL 607\file.obj`
-
-		d, err := ioutil.ReadFile(filename)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		s := string(d)
-		//lines := strings.Split(s, " ")
-		lines := strings.Fields(s)
-
-		fmt.Print(lines)
-	*/
-	/*
-		filebuffer, err := ioutil.ReadFile(filename)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		inputdata := string(filebuffer)
-		data := bufio.NewScanner(strings.NewReader(inputdata))
-		data.Split(bufio.ScanRunes)
-		//fmt.Print(data.Text())
-
-		for data.Scan() {
-			if data.Text() == "f" {
-				fmt.Print(data.Text())
-			}
-		}
-	*/
-	//ndsjdj
-
 	// open file for reading
 	// read line by line
 	lines, err := readLines(`C:\Users\Solonas\Desktop\EPL 607\file.obj`)
@@ -155,7 +103,7 @@ func main() {
 			fmt.Println("ERROR")
 			read = append(read, "\n")
 		}
-		fmt.Println(line)
+		//fmt.Println(line)
 
 		if read[0] == "f" {
 			fline1 := strings.Split(read[1], "/")
@@ -193,7 +141,7 @@ func main() {
 			}
 
 		} else {
-			fmt.Println(read)
+			//fmt.Println(read)
 		}
 
 		id = append(id, i)
