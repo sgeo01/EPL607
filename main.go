@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+
 	gl "github.com/chsc/gogl/gl33"
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -59,11 +60,21 @@ var yrot float32 = 20.0
 var zrot float32 = 0.0
 var xrot float32 = 0.0
 var UniScale gl.Int
+var UniScale1 gl.Int
+var UniScale2 gl.Int
+var UniScalelamb gl.Int
 
 var f = []int{}
+var fn = []int{}
 var v = []float64{}
+var vn = []float64{}
 var triangle_vertices = []gl.Float{}
 var triangle_colours = []gl.Float{}
+var triangle_normals = []gl.Float{}
+
+var color1 gl.Float
+var color2 gl.Float
+var color3 gl.Float
 
 func readLines(path string) ([]string, error) {
 	file, err := os.Open(path)
@@ -79,7 +90,9 @@ func readLines(path string) ([]string, error) {
 	}
 	return lines, scanner.Err()
 }
-
+var random1 gl.Float
+var random2 gl.Float
+var random3 gl.Float
 func main() {
 	var window *sdl.Window
 	var context sdl.GLContext
@@ -89,7 +102,15 @@ func main() {
 
 	// open file for reading
 	// read line by line
-	lines, err := readLines(`C:\Users\Solonas\Desktop\EPL 607\torus.obj`)
+	myProgramName := os.Args[1]
+	cmdcolor1:= os.Args[2]
+	cmdcolor2:= os.Args[3]
+	cmdcolor3:= os.Args[4]
+      
+    // it will display 
+    // the program name
+
+	lines, err := readLines(myProgramName)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
@@ -103,8 +124,8 @@ func main() {
 			fmt.Println("ERROR")
 			read = append(read, "\n")
 		}
-		//fmt.Println(line)
 
+		
 		if read[0] == "f" {
 			fline1 := strings.Split(read[1], "/")
 			fline2 := strings.Split(read[2], "/")
@@ -112,7 +133,12 @@ func main() {
 			intfline1, d1 := strconv.Atoi(fline1[0])
 			intfline2, d2 := strconv.Atoi(fline2[0])
 			intfline3, d3 := strconv.Atoi(fline3[0])
+			intfvline1, d1 := strconv.Atoi(fline1[2])
+			intfvline2, d2 := strconv.Atoi(fline2[2])
+			intfvline3, d3 := strconv.Atoi(fline3[2])
 			f = append(f, intfline1, intfline2, intfline3)
+			fn = append(fn, intfvline1, intfvline2, intfvline3)
+			
 			d1t := []error{}
 			d2t := []error{}
 			d3t := []error{}
@@ -121,9 +147,6 @@ func main() {
 			d2t = append(d2t, d2)
 			d3t = append(d3t, d3)
 
-			/*fmt.Println(i, intvline1)
-			fmt.Println(i, intvline2)
-			fmt.Println(i, intvline3)*/
 
 		} else if read[0] == "v" {
 			vline1 := strings.Fields(read[1])
@@ -139,8 +162,20 @@ func main() {
 				v = append(v, floatvline3)
 			}
 
-		} else {
-			//fmt.Println(read)
+		} else if read[0] == "vn" {
+			vnline1 := strings.Fields(read[1])
+			vnline2 := strings.Fields(read[2])
+			vnline3 := strings.Fields(read[3])
+
+			if floatvnline1, err := strconv.ParseFloat(vnline1[0], 64); err == nil {
+				vn = append(vn, floatvnline1)
+			}
+			if floatvnline2, err := strconv.ParseFloat(vnline2[0], 64); err == nil {
+				vn = append(vn, floatvnline2)
+			}
+			if floatvnline3, err := strconv.ParseFloat(vnline3[0], 64); err == nil {
+				vn = append(vn, floatvnline3)
+			}
 		}
 
 		id = append(id, i)
@@ -155,13 +190,41 @@ func main() {
 		t1 := gl.Float(v[num1])
 		t2 := gl.Float(v[num2])
 		t3 := gl.Float(v[num3])
-		random1 := gl.Float(rand.Float64())
-		random2 := gl.Float(rand.Float64())
-		random3 := gl.Float(rand.Float64())
+		//random1 := gl.Float(rand.Float64())
+		/*random2 := gl.Float(rand.Float64())
+		random3 := gl.Float(rand.Float64())*/
+		
+		col1fl, err := strconv.ParseFloat(cmdcolor1, 1)
+		col2fl, err := strconv.ParseFloat(cmdcolor2, 1)
+		col3fl, err := strconv.ParseFloat(cmdcolor3, 1)
+
+		if err != nil {
+			log.Fatalf("readLines: %s", err)
+		}
+		color1= gl.Float(col1fl)
+		color2= gl.Float(col2fl)
+		color3= gl.Float(col3fl) 
 		triangle_vertices = append(triangle_vertices, t1, t2, t3)
-		triangle_colours = append(triangle_colours, random1, random2, random3)
+		triangle_colours = append(triangle_colours,color1, color2, color3)
 
 	}
+
+	random1=color1
+	random2=color2
+	random3=color3
+	for i := 0; i < len(fn); i++ {
+		num1vn := fn[i]*3 - 3
+		num2vn := fn[i]*3 - 2
+		num3vn := fn[i]*3 - 1
+
+		t1n := gl.Float(vn[num1vn])
+		t2n := gl.Float(vn[num2vn])
+		t3n := gl.Float(vn[num3vn])
+
+		triangle_normals = append(triangle_normals, t1n, t2n, t3n)
+	}
+
+
 
 	runtime.LockOSThread()
 	if err = sdl.Init(sdl.INIT_EVERYTHING); err != nil {
@@ -202,6 +265,14 @@ func main() {
 	gl.BindBuffer(gl.ARRAY_BUFFER, colourbuffer)
 	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(triangle_colours)*4), gl.Pointer(&triangle_colours[0]), gl.STATIC_DRAW)
 
+	
+	// NORMAL BUFFER
+	var normalbuffer gl.Uint
+	gl.GenBuffers(1, &normalbuffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, normalbuffer)
+	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(triangle_normals)*4),
+	gl.Pointer(&triangle_normals[0]), gl.STATIC_DRAW)
+
 	// GUESS WHAT
 	program := createprogram()
 
@@ -217,16 +288,35 @@ func main() {
 	gl.EnableVertexAttribArray(1)
 	gl.BindBuffer(gl.ARRAY_BUFFER, colourbuffer)
 	gl.VertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, 0, nil)
+	
+	gl.EnableVertexAttribArray(2)
+	gl.BindBuffer(gl.ARRAY_BUFFER, normalbuffer)	
+	gl.VertexAttribPointer(2, 3, gl.FLOAT, gl.FALSE, 0, nil)	
 
 	//UNIFORM HOOK
 	unistring := gl.GLString("scaleMove")
 	UniScale = gl.GetUniformLocation(program, unistring)
 	fmt.Printf("Uniform Link: %v\n", UniScale+1)
 
+	//UNIFORM HOOK
+	unistring1 := gl.GLString("lightSource")
+	UniScale1 = gl.GetUniformLocation(program, unistring1)
+	fmt.Printf("Uniform Link: %v\n", UniScale1+1)
+
+	unistring2 := gl.GLString("colourChange")
+	UniScale2 = gl.GetUniformLocation(program, unistring2)
+	fmt.Printf("Uniform Link: %v\n", UniScale2+1)
+
 	gl.UseProgram(program)
 
+
 	running = true
+
+	
 	for running {
+
+
+
 		for event = sdl.PollEvent(); event != nil; event =
 			sdl.PollEvent() {
 			switch t := event.(type) {
@@ -237,16 +327,31 @@ func main() {
 				xrot = float32(t.Y) / 2
 				yrot = float32(t.X) / 2
 				fmt.Printf("[%dms]MouseMotion\tid:%d\tx:%d\ty:%d\txrel:%d\tyrel:%d\n", t.Timestamp, t.Which, t.X, t.Y, t.XRel, t.YRel)
+					
 			}
-		}
+		}		
+		
 		drawgl()
 		window.GLSwap()
+
 	}
 
 }
+var counter=0
 
 func drawgl() {
+	counter++
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+	var colourbuffer gl.Uint
+	gl.GenBuffers(1, &colourbuffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, colourbuffer)
+	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(triangle_colours)*4), gl.Pointer(&triangle_colours[0]), gl.STATIC_DRAW)
+
+	// VERTEX ARRAY HOOK COLOURS
+	gl.EnableVertexAttribArray(1)
+	gl.BindBuffer(gl.ARRAY_BUFFER, colourbuffer)
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, 0, nil)
 
 	uniYaw = yrot * (math.Pi / 180.0)
 	yrot = yrot - 1.0
@@ -254,25 +359,61 @@ func drawgl() {
 	zrot = zrot - 0.5
 	uniRoll = xrot * (math.Pi / 180.0)
 	xrot = xrot - 0.2
-
+	
 	gl.Uniform4f(UniScale, gl.Float(uniRoll), gl.Float(uniYaw), gl.Float(uniPitch), gl.Float(uniscale))
+	gl.Uniform3f(UniScale1, gl.Float(10), gl.Float(0), gl.Float(30))
+
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.DrawArrays(gl.TRIANGLES, gl.Int(0), gl.Sizei(len(triangle_vertices)*4))
+	
+
+	if (counter==60){
+		counter=0
+		random1 = gl.Float(rand.Float64())
+		time.Sleep(40 * time.Millisecond)
+		random2 = gl.Float(rand.Float64())
+		time.Sleep(40 * time.Millisecond)
+		random3 = gl.Float(rand.Float64())
+		gl.Uniform3f(UniScale2, gl.Float(random1), gl.Float(random2), gl.Float(random3))
+	}else{	gl.Uniform3f(UniScale2, gl.Float(random1), gl.Float(random2), gl.Float(random3))
+	}
+	
+
 
 	time.Sleep(50 * time.Millisecond)
-
+	
 }
 
 const (
 	winTitle           = "OpenGL Shader"
-	winWidth           = 640
-	winHeight          = 480
+	winWidth           = 760
+	winHeight          = 600
 	vertexShaderSource = `
 #version 330
 layout (location = 0) in vec3 Position;
 layout(location = 1) in vec3 vertexColor;
+layout(location = 2) in vec3 normal;
+
+
 uniform vec4 scaleMove;
+uniform vec3 lightSource;
+uniform vec3 colourChange;
 out vec3 fragmentColor;
+
+struct Lights
+{
+  vec3 position;
+  vec3 diffuse; // Colour
+};
+
+float lambert(vec3 N, vec3 L)
+{
+  vec3 nrmN = normalize(N);
+  vec3 nrmL = normalize(L);
+  float result = dot(nrmN, nrmL);
+  return max(result, 0.0);
+}
+
 void main()
 { 
 // YOU CAN OPTIMISE OUT cos(scaleMove.x) AND sin(scaleMove.y) AND UNIFORM THE VALUES IN
@@ -291,7 +432,12 @@ vec3 persp = vec3( move.x  / ( (move.z + 2) / 3 ) ,
 		     move.z);
 
     gl_Position = vec4(persp, 1.0);
-    fragmentColor = vertexColor;
+
+	Lights light;
+	light.diffuse = vec3(1.0, 1.0, 1.0);
+  
+	fragmentColor = colourChange*light.diffuse* lambert(normal, lightSource);;
+
 }
 `
 	fragmentShaderSource = `
