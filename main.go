@@ -444,6 +444,7 @@ vec3 persp = vec3( move.x  / ( (move.z + 2) / 3 ) ,
 #version 330
 out vec4 outColor;
 in vec3 fragmentColor;
+
 void main()
 {
 	outColor = vec4(fragmentColor, 1.0);
