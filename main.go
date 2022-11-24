@@ -343,16 +343,6 @@ func drawgl() {
 	counter++
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-	var colourbuffer gl.Uint
-	gl.GenBuffers(1, &colourbuffer)
-	gl.BindBuffer(gl.ARRAY_BUFFER, colourbuffer)
-	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(triangle_colours)*4), gl.Pointer(&triangle_colours[0]), gl.STATIC_DRAW)
-
-	// VERTEX ARRAY HOOK COLOURS
-	gl.EnableVertexAttribArray(1)
-	gl.BindBuffer(gl.ARRAY_BUFFER, colourbuffer)
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, 0, nil)
-
 	uniYaw = yrot * (math.Pi / 180.0)
 	yrot = yrot - 1.0
 	uniPitch = zrot * (math.Pi / 180.0)
